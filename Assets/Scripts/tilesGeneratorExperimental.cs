@@ -8,6 +8,8 @@ public class tilesGeneratorExperimental : MonoBehaviour
     public float spaceBetween = 1;
     public Material tileMaterialMain;
 
+    public Transform container;
+
     public int sideValueNumberOfTiles = 1;
 
     public List<GameObject> tiles;
@@ -32,7 +34,7 @@ public class tilesGeneratorExperimental : MonoBehaviour
             for (int z = 0; z < sideValueNumberOfTiles; z++)
             {
                 Vector3 tilePos = new Vector3(x * adjustedTileSize, 0, z * adjustedTileSize);
-                GameObject tile = Instantiate(tilePrefab, tilePos, Quaternion.identity, transform);
+                GameObject tile = Instantiate(tilePrefab, tilePos, Quaternion.identity, container);
                 tiles.Add(tile);
                 
                 Renderer tileRenderer = tile.GetComponent<Renderer>();
