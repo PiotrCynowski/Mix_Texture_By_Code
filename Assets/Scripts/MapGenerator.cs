@@ -2,37 +2,69 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    int octaves = 1;
-    float persistance = 0.5f;
-    float lacunarity = 1;
-
-    float[,] examplePathArray;
+    int mapSideSize;
+    float smoothEdgesValue;
     
-    int seed;
     TerrainType[] regions;
-    Vector2 offset = Vector2.zero;
+    
+    readonly Vector2 offset = Vector2.zero;
+    readonly int octaves = 1;
+    readonly float persistance = 0.5f;
+    readonly float lacunarity = 1;
 
-    public MapGenerator(int _seed) {
-        seed = _seed;
+    float[,] noiseMap;
+
+    public MapGenerator(int seed, TerrainType[] regions, int mapSideSize, float noiseScale, float smoothEdgesValue) {
+        this.regions = regions;
+        this.mapSideSize = mapSideSize;
+        this.smoothEdgesValue = smoothEdgesValue;
+        
+        noiseMap = Noise.GenerateNoiseMap(mapSideSize, mapSideSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
     }
 
-    /*#region Chunks
-    void GenerateMapInChunks(TerrainType[] regions) 
+    #region Generate Texture
+    public Texture2D GenerateChunkMapTexture(int chunkSize, Vector2Int chunkLocCoord)
     {
-        int chunkSize = 128;
-        int numberOfChunks = mapSideSize / chunkSize;
+        Color[] textureMap = new Color[chunkSize * chunkSize];
 
-        for (int chunkY = 0; chunkY < numberOfChunks; chunkY++) {
-            for (int chunkX = 0; chunkX < numberOfChunks; chunkX++) {
-                ProcessChunk(chunkX, chunkY, chunkSize, regions);
+        for (int x = 0; x < chunkSize; x++)
+        {
+            for (int y = 0; y < chunkSize; y++)
+            {
+                int mapX = chunkLocCoord.x * chunkSize + x;
+                int mapY = chunkLocCoord.y * chunkSize + y;
+
+                float currentHeight = noiseMap[mapX, mapY];
+
+                for (int i = 0; i < regions.Length; i++)
+                {
+                    if (currentHeight <= regions[i].height)
+                    {
+                        if (smoothEdgesValue > 0 && i - 1 >= 0)
+                        {
+                            float diff = currentHeight - regions[i - 1].height;
+                            if (diff <= 0.1f)
+                            {
+                                textureMap[y * chunkSize + x] = LerpTextures(mapX, mapY, i, diff, chunkSize);
+                                break;
+                            }
+                        }
+
+                        Texture2D texture = regions[i].texture;
+                        int tiling = regions[i].tiling;
+                        float u = (x / (float)chunkSize) * tiling;
+                        float v = (y / (float)chunkSize) * tiling;
+                        textureMap[y * chunkSize + x] = texture.GetPixelBilinear(u % 1, v % 1);
+                        break;
+                    }
+                }
             }
         }
+
+        return TextureFromColourMap(textureMap, chunkSize, chunkSize);
     }
-    #endregion*/
-
-    public (Texture2D, Texture2D, Texture2D, Texture2D) GenerateMap(TerrainType[] regions, int mapSideSize, float noiseScale, bool smoothEdges = false) {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapSideSize, mapSideSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
-
+    
+    public (Texture2D, Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseTextureMap() {
         Color[] colorMap = new Color[mapSideSize * mapSideSize];
         Color[] maskMap = new Color[mapSideSize * mapSideSize];
         Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
@@ -48,16 +80,13 @@ public class MapGenerator
                         maskMap[y * mapSideSize + x] = regions[i].maskColor;
                         noiseMapTex[y * mapSideSize + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
 
-                        if (smoothEdges)
+                        if (smoothEdgesValue > 0 && i - 1 >= 0)
                         {
-                            if (i - 1 >= 0)
+                            float diff = currentHeight - regions[i - 1].height;
+                            if (diff <= 0.1)
                             {
-                                float diff = currentHeight - regions[i - 1].height;
-                                if (diff <= 0.1)
-                                {
-                                    textureMap[y * mapSideSize + x] = LerpTextures(x, y, mapSideSize, i, diff, regions);
-                                    break;
-                                }
+                                textureMap[y * mapSideSize + x] = LerpTextures(x, y, i, diff);
+                                break;
                             }
                         }
 
@@ -79,8 +108,35 @@ public class MapGenerator
             TextureFromColourMap(textureMap, mapSideSize, mapSideSize)
         );
     }
+    
+    public (Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseMap() {
+        Color[] colorMap = new Color[mapSideSize * mapSideSize];
+        Color[] maskMap = new Color[mapSideSize * mapSideSize];
+        Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
+        
+        for (int y = 0; y < mapSideSize; y++) {
+            for (int x = 0; x < mapSideSize; x++) {
+                float currentHeight = noiseMap[x, y];
+                for (int i = 0; i < regions.Length; i++) {
+                    if (currentHeight <= regions[i].height) {
+                        colorMap[y * mapSideSize + x] = regions[i].color;
+                        maskMap[y * mapSideSize + x] = regions[i].maskColor;
+                        noiseMapTex[y * mapSideSize + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
+                        break;
+                    }
+                }
+            }
+        }
 
-    Color LerpTextures(int x, int y, int mapSideSize, int region, float difference, TerrainType[] regions) {
+        return (
+            TextureFromColourMap(colorMap, mapSideSize, mapSideSize),
+            TextureFromColourMap(maskMap, mapSideSize, mapSideSize),
+            TextureFromColourMap(noiseMapTex, mapSideSize, mapSideSize)
+        );
+    }
+    #endregion
+    
+    Color LerpTextures(int x, int y, int region, float difference) {
         Texture2D texture1 = regions[region].texture;
         int tiling1 = regions[region].tiling;
         
@@ -95,7 +151,26 @@ public class MapGenerator
         Color color1 = texture1.GetPixelBilinear(u1 % 1, v1 % 1);
         Color color2 = texture2.GetPixelBilinear(u2 % 1, v2 % 1);
 
-        Color lerpedColor = Color.Lerp(color1, color2, 1- (difference*10));
+        Color lerpedColor = Color.Lerp(color1, color2, 1 - (difference*smoothEdgesValue));
+        return lerpedColor;
+    }
+    
+    Color LerpTextures(int x, int y, int region, float difference, int chunkSize) {
+        Texture2D texture1 = regions[region].texture;
+        int tiling1 = regions[region].tiling;
+        
+        Texture2D texture2 = regions[region-1].texture;
+        int tiling2 = regions[region-1].tiling;
+
+        float u1 = (x / (float)chunkSize) * tiling1;
+        float v1 = (y / (float)chunkSize) * tiling1;
+        float u2 = (x / (float)chunkSize) * tiling2;
+        float v2 = (y / (float)chunkSize) * tiling2;
+
+        Color color1 = texture1.GetPixelBilinear(u1 % 1, v1 % 1);
+        Color color2 = texture2.GetPixelBilinear(u2 % 1, v2 % 1);
+
+        Color lerpedColor = Color.Lerp(color1, color2, 1 - (difference*smoothEdgesValue));
         return lerpedColor;
     }
 
