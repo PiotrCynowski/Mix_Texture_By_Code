@@ -11,9 +11,14 @@ public class GenerateMapTextureEditor : Editor
 
         GenerateMapTexture GMT = (GenerateMapTexture)target;
 
-        if (GUILayout.Button("Generate Map Texture"))
+        if (GUILayout.Button("Generate Chunk Textures"))
         {
-            GMT.GenerateTexture();
+            GMT.GenerateChunkTextures();
+        }
+        
+        if (GUILayout.Button("Generate One Texture"))
+        {
+            GMT.GenerateOneTexture();
         }
     }
 }

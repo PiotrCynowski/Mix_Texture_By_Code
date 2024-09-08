@@ -4,6 +4,8 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GenerateMapTexture : MonoBehaviour {
+    [SerializeField] int seedManual;
+    [SerializeField] bool randomSeed;
     [SerializeField] int mapSideSize;
     [SerializeField] float noiseScale = 45;
     [SerializeField] float smoothEdgesValue = 10f;
@@ -12,8 +14,7 @@ public class GenerateMapTexture : MonoBehaviour {
     [SerializeField] MapDataManager dataManager;
     [SerializeField] tilesGeneratorExperimental tileGenerator;
     
-    public void GenerateTexture() {
-
+    public void GenerateChunkTextures() {
         if (tileGenerator.tileExistMaterials == null || tileGenerator.tileExistMaterials.Count < 1)
         {
             return;
@@ -21,9 +22,13 @@ public class GenerateMapTexture : MonoBehaviour {
         
         StartCoroutine(CreateChunkTextures(tileGenerator.sideValueNumberOfTiles));
     }
+    
+    public void GenerateOneTexture() {
+        StartCoroutine(CreateTextures());
+    }
 
     IEnumerator CreateChunkTextures(int numberOfTilesSide = 1) {
-        MapGenerator mapGenerator = new(Random.Range(0, 10000), dataManager.GetTerrains(), mapSideSize, noiseScale, smoothEdgesValue);
+        MapGenerator mapGenerator = new(randomSeed ? Random.Range(0, 10000) : seedManual, dataManager.GetTerrains(), mapSideSize, noiseScale, smoothEdgesValue);
         
         int chunkSize = mapSideSize / numberOfTilesSide;
         Texture2D chunkTexture;
@@ -50,7 +55,7 @@ public class GenerateMapTexture : MonoBehaviour {
     }
     
     IEnumerator CreateTextures() {
-        MapGenerator mapGenerator = new(Random.Range(0, 10000), dataManager.GetTerrains(), mapSideSize, noiseScale, smoothEdgesValue);
+        MapGenerator mapGenerator = new(randomSeed ? Random.Range(0, 10000) : seedManual, dataManager.GetTerrains(), mapSideSize, noiseScale, smoothEdgesValue);
         (Texture2D colorMap, Texture2D maskMap, Texture2D noiseMap, Texture2D textureMap) = mapGenerator.GenerateColorMaskNoiseTextureMap();
 
         colorMapRenderer.sharedMaterial.mainTexture = colorMap;
