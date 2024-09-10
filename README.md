@@ -6,6 +6,10 @@ This tool provides users with the flexibility to generate complex and visually a
 
 ![me](https://github.com/PiotrCynowski/Mix_Texture_By_Code/blob/master/pic/textures_mixing.gif)
 
+*Textures used*
+
+![alt text](https://github.com/PiotrCynowski/Mix_Texture_By_Code/blob/master/pic/textures.png?raw=true)
+
 Key Features:
 
 ### Texture Mixing:
