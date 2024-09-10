@@ -64,7 +64,7 @@ public class MapGenerator
         return TextureFromColourMap(textureMap, chunkSize, chunkSize);
     }
     
-    public (Texture2D, Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseTextureMap() {
+    public (Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseTextureMap() {
         Color[] colorMap = new Color[mapSideSize * mapSideSize];
         Color[] maskMap = new Color[mapSideSize * mapSideSize];
         Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
@@ -77,7 +77,6 @@ public class MapGenerator
                     if (currentHeight <= regions[i].height) {
 
                         colorMap[y * mapSideSize + x] = regions[i].color;
-                        maskMap[y * mapSideSize + x] = regions[i].maskColor;
                         noiseMapTex[y * mapSideSize + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
 
                         if (smoothEdgesValue > 0 && i - 1 >= 0)
@@ -103,13 +102,12 @@ public class MapGenerator
 
         return (
             TextureFromColourMap(colorMap, mapSideSize, mapSideSize),
-            TextureFromColourMap(maskMap, mapSideSize, mapSideSize),
             TextureFromColourMap(noiseMapTex, mapSideSize, mapSideSize),
             TextureFromColourMap(textureMap, mapSideSize, mapSideSize)
         );
     }
     
-    public (Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseMap() {
+    public (Texture2D, Texture2D) GenerateColorMaskNoiseMap() {
         Color[] colorMap = new Color[mapSideSize * mapSideSize];
         Color[] maskMap = new Color[mapSideSize * mapSideSize];
         Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
@@ -120,7 +118,6 @@ public class MapGenerator
                 for (int i = 0; i < regions.Length; i++) {
                     if (currentHeight <= regions[i].height) {
                         colorMap[y * mapSideSize + x] = regions[i].color;
-                        maskMap[y * mapSideSize + x] = regions[i].maskColor;
                         noiseMapTex[y * mapSideSize + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
                         break;
                     }
@@ -130,7 +127,6 @@ public class MapGenerator
 
         return (
             TextureFromColourMap(colorMap, mapSideSize, mapSideSize),
-            TextureFromColourMap(maskMap, mapSideSize, mapSideSize),
             TextureFromColourMap(noiseMapTex, mapSideSize, mapSideSize)
         );
     }
@@ -186,10 +182,8 @@ public class MapGenerator
 
 [System.Serializable]
 public struct TerrainType {
-    public string name;
     public float height;
     public Color color;
-    public Color maskColor;
     public Texture2D texture;
     public int tiling;
 }

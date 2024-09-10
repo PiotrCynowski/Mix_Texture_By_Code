@@ -9,7 +9,7 @@ public class GenerateMapTexture : MonoBehaviour {
     [SerializeField] int mapSideSize;
     [SerializeField] float noiseScale = 45;
     [SerializeField] float smoothEdgesValue = 10f;
-    [SerializeField] Renderer colorMapRenderer, maskMapRenderer, noiseMapRenderer, textureMapRenderer;
+    [SerializeField] Renderer colorMapRenderer, noiseMapRenderer, textureMapRenderer;
 
     [SerializeField] MapDataManager dataManager;
     [SerializeField] TilesGenerator tileGenerator;
@@ -49,19 +49,17 @@ public class GenerateMapTexture : MonoBehaviour {
         
         yield return null;
         
-        (Texture2D colorMap, Texture2D maskMap, Texture2D noiseMap) = mapGenerator.GenerateColorMaskNoiseMap();
+        (Texture2D colorMap, Texture2D noiseMap) = mapGenerator.GenerateColorMaskNoiseMap();
         colorMapRenderer.sharedMaterial.mainTexture = colorMap;
-        maskMapRenderer.sharedMaterial.mainTexture = maskMap;
         noiseMapRenderer.sharedMaterial.mainTexture = noiseMap;
 
     }
     
     IEnumerator CreateTextures() {
         MapGenerator mapGenerator = new(randomSeed ? Random.Range(0, 10000) : seedManual, dataManager.GetTerrains(), mapSideSize, noiseScale, smoothEdgesValue);
-        (Texture2D colorMap, Texture2D maskMap, Texture2D noiseMap, Texture2D textureMap) = mapGenerator.GenerateColorMaskNoiseTextureMap();
+        (Texture2D colorMap, Texture2D noiseMap, Texture2D textureMap) = mapGenerator.GenerateColorMaskNoiseTextureMap();
 
         colorMapRenderer.sharedMaterial.mainTexture = colorMap;
-        maskMapRenderer.sharedMaterial.mainTexture = maskMap;
         noiseMapRenderer.sharedMaterial.mainTexture = noiseMap;
         textureMapRenderer.sharedMaterial.mainTexture = textureMap;
 
