@@ -1,13 +1,10 @@
-## dynamic X Z map generation 
-This repository contains a random map generator with a custom grid that generates tiles according to the player's movement direction
-Project was created using Unity Engine.
-
-*map generation*
-![me](https://github.com/PiotrCynowski/Dynamic_Map_Grid/blob/master/pic/textures_mixing.gif)
-
 ## Project: Texture Noise Mixer
 Overview: The Texture Noise Mixer is a versatile tool for combining multiple textures into a single composite texture that resembles a noise-mixed pattern. 
 This tool provides users with the flexibility to generate complex and visually appealing textures by controlling various parameters such as texture selection, height mapping, color blending, tiling, and edge transitions.
+
+*texture mixing*
+
+![me](https://github.com/PiotrCynowski/Mix_Texture_By_Code/blob/master/pic/textures_mixing.gif)
 
 Key Features:
 
