@@ -66,7 +66,6 @@ public class MapGenerator
     
     public (Texture2D, Texture2D, Texture2D) GenerateColorMaskNoiseTextureMap() {
         Color[] colorMap = new Color[mapSideSize * mapSideSize];
-        Color[] maskMap = new Color[mapSideSize * mapSideSize];
         Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
         Color[] textureMap = new Color[mapSideSize * mapSideSize];
         
@@ -109,7 +108,6 @@ public class MapGenerator
     
     public (Texture2D, Texture2D) GenerateColorMaskNoiseMap() {
         Color[] colorMap = new Color[mapSideSize * mapSideSize];
-        Color[] maskMap = new Color[mapSideSize * mapSideSize];
         Color[] noiseMapTex = new Color[mapSideSize * mapSideSize];
         
         for (int y = 0; y < mapSideSize; y++) {
