@@ -41,7 +41,7 @@ public class TilesGenerator : MonoBehaviour
                 tileExistMaterials.Add(tileMat);
             }
         }
-        tileExistMaterials.Reverse();
+        DestroyImmediate(TileObj);
     }
 
     public void AssignTextureToTile(Texture2D textureToAssign, int tileIndex)
