@@ -19,7 +19,7 @@ public class MapGenerator
         this.mapSideSize = mapSideSize;
         this.smoothEdgesValue = smoothEdgesValue;
         
-        noiseMap = Noise.GenerateNoiseMap(mapSideSize, mapSideSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        noiseMap = NoiseGenerator.GenerateNoiseMap(mapSideSize, mapSideSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
     }
 
     #region Generate Texture

@@ -12,15 +12,17 @@ public class GenerateMapTexture : MonoBehaviour {
     [SerializeField] Renderer colorMapRenderer, maskMapRenderer, noiseMapRenderer, textureMapRenderer;
 
     [SerializeField] MapDataManager dataManager;
-    [SerializeField] tilesGeneratorExperimental tileGenerator;
+    [SerializeField] TilesGenerator tileGenerator;
     
     public void GenerateChunkTextures() {
-        if (tileGenerator.tileExistMaterials == null || tileGenerator.tileExistMaterials.Count < 1)
+        if (tileGenerator.IsTilesReady())
         {
-            return;
+            StartCoroutine(CreateChunkTextures(tileGenerator.GetSideValueNumberOfTiles()));
         }
-        
-        StartCoroutine(CreateChunkTextures(tileGenerator.sideValueNumberOfTiles));
+        else
+        {
+            Debug.LogWarning("Tiles do not exist");
+        }
     }
     
     public void GenerateOneTexture() {

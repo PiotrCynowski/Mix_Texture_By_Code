@@ -25,14 +25,14 @@ public class GenerateMapTextureEditor : Editor
 #endif
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(tilesGeneratorExperimental))]
+[CustomEditor(typeof(TilesGenerator))]
 public class tilesGeneratorExperimentalEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        tilesGeneratorExperimental TGE = (tilesGeneratorExperimental)target;
+        TilesGenerator TGE = (TilesGenerator)target;
 
         if (GUILayout.Button("Generate Tiles"))
         {
