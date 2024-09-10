@@ -821,7 +821,7 @@ GameObject:
   - component: {fileID: 1932135937}
   - component: {fileID: 1932135936}
   m_Layer: 0
-  m_Name: colorMap
+  m_Name: ColorMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -927,7 +927,7 @@ GameObject:
   - component: {fileID: 1969876082}
   - component: {fileID: 1969876081}
   m_Layer: 0
-  m_Name: noiseMap
+  m_Name: NoiseMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
