@@ -11,24 +11,24 @@ This tool provides users with the flexibility to generate complex and visually a
 
 Key Features:
 
-#Texture Mixing:
+### Texture Mixing:
 Combine multiple textures into one composite texture that blends them based on user-defined parameters.
 
-#Height-Based Noise Mapping:
+### Height-Based Noise Mapping:
 Use height maps to influence the noise pattern, determining how different textures are mixed.
 
-#Color-Based Texture Generation:
+### Color-Based Texture Generation:
 Generate texture variants that focus on color blending.
 
-#Tiling Options:
+### Tiling Options:
 Apply individual tiling settings to each texture before mixing, providing control over how textures repeat across the final output.
 
-#Edge Transition Control:
+### Edge Transition Control:
 Choose between smooth and sharp edge transitions between textures.
 
-#Two Generation Modes:
+### Two Generation Modes:
 Single Large Texture: Generate one large composite texture based on the setup parameters.
 Tile Generator: Create a tile matrix, then automatically generate and assign textures to each tile, representing a single large texture.
 
-#### Main scene directory:
+## Main scene directory:
 Assets\Scenes\Main.unity
